@@ -1,65 +1,96 @@
 package proj.gomoku.app;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import proj.gomoku.app.component.Barrel;
-import proj.gomoku.model.ChessState;
+import net.quepierts.papyri.event.OptionUpdateEvent;
+import net.quepierts.papyri.event.PapyriEventBus;
+import proj.gomoku.app.view.BaseBoard;
+import proj.gomoku.app.view.ChessBoardPane;
+import proj.gomoku.app.view.ClickButton;
+import proj.gomoku.app.view.debug.DebugPane;
+import proj.gomoku.app.view.option.OptionsPane;
 import proj.gomoku.model.DroppingGomokuGame;
-import proj.gomoku.model.GomokuHelper;
-import proj.gomoku.model.bot.GomokuBot;
+import proj.gomoku.model.bot.BotHandler;
+import proj.gomoku.model.event.CloseApplicationEvent;
 
 public class GomokuApplication extends Application {
     public static final int SCENE_WIDTH = 800;
     public static final int SCENE_HEIGHT = 600;
 
-    private final DroppingGomokuGame game = new DroppingGomokuGame();
-    private final GomokuBot bot = new GomokuBot(this.game);
-    private final Barrel[] barrels = new Barrel[GomokuHelper.CHESSBOARD_SIZE];
+    private final DroppingGomokuGame game = new DroppingGomokuGame(false);
+    private final BotHandler handler = new BotHandler(game);
 
     @Override
     public void start(Stage stage) throws Exception {
+        PapyriEventBus.subscribe(this.handler);
+        PapyriEventBus.subscribe(OptionUpdateEvent.class, this.game::onOptionUpdate);
+        this.initScene(stage);
+    }
+
+    private void initScene(Stage stage) {
         BorderPane pane = new BorderPane();
 
-        Pane center = new Pane();
-        ObservableList<Node> children = center.getChildren();
-        for (int i = 0; i < GomokuHelper.CHESSBOARD_SIZE; i++) {
-            Barrel barrel = new Barrel(this.game, i);
-            barrel.setLayoutX(i * 85);
-            children.add(barrel);
-            this.barrels[i] = barrel;
-        }
+        Pane chessBoardPane = new ChessBoardPane(game);
 
-        Button button = new Button("Undo");
-        button.setPrefWidth(80);
-        button.setPrefHeight(32);
-        button.setTranslateY(400);
-        button.setOnMouseClicked(event -> {
-            int lastStep = this.game.getLastStep();
-            if (this.game.undo()) {
-                int column = GomokuHelper.getColumn(lastStep);
-                this.barrels[column].undo();
-            }
-        });
-        children.add(button);
-        pane.setCenter(center);
+        OptionsPane optionsPane = new OptionsPane();
+        DebugPane debugPane = new DebugPane();
+        Pane bottom = this.initBottom();
+        debugPane.setVisible(false);
+
+        pane.setCenter(chessBoardPane);
+        pane.setLeft(optionsPane);
+        pane.setRight(debugPane);
+        pane.setBottom(bottom);
+
+        double minWidth = chessBoardPane.getMinWidth() + optionsPane.getMinWidth() + debugPane.getMinWidth();
 
         Scene scene = new Scene(pane);
         stage.setScene(scene);
-        stage.setWidth(SCENE_WIDTH);
-        stage.setMinWidth(SCENE_WIDTH);
-        stage.setMaxWidth(SCENE_WIDTH);
-        stage.setHeight(SCENE_HEIGHT);
-        stage.setMinHeight(SCENE_HEIGHT);
-        stage.setMaxHeight(SCENE_HEIGHT);
+        stage.setMinWidth(minWidth);
+        stage.setMinHeight(SCENE_HEIGHT + 40);
         stage.show();
+        stage.setOnCloseRequest(windowEvent -> PapyriEventBus.post(new CloseApplicationEvent()));
+
+        pane.requestFocus();
+
+        PapyriEventBus.subscribe(OptionUpdateEvent.class, event -> {
+            if (event.getOption() == Options.ENABLED_DEBUG) {
+                boolean value = Options.ENABLED_DEBUG.getBooleanValue();
+                debugPane.setVisible(value);
+
+                if (!value) {
+                    Options.STEP_DEBUG.setValue(false);
+                }
+            }
+        });
+    }
+
+    private Pane initBottom() {
+        ClickButton undo = new ClickButton(160, 32, "Undo");
+        undo.setNormalColor(Color.rgb(228,119,11));
+        undo.setHoveredColor(Color.rgb(236,135,14));
+        undo.setPressedColor(Color.rgb(245,177,109));
+        undo.setOnMouseClicked(event -> this.game.undo());
+
+        ClickButton reset = new ClickButton(160, 32, "Reset");
+        reset.setNormalColor(Color.rgb(110,195,201));
+        reset.setHoveredColor(Color.rgb(153,209,211));
+        reset.setPressedColor(Color.rgb(202,229,232));
+        reset.setOnMouseClicked(event -> this.game.reset());
+
+        HBox bottom = new HBox(8);
+        bottom.setPadding(new Insets(0, 0, 10, 0));
+        bottom.getChildren().addAll(undo, reset);
+        bottom.setAlignment(Pos.CENTER);
+        return bottom;
     }
 }

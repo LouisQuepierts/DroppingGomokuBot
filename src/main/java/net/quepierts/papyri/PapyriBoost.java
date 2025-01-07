@@ -8,9 +8,11 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import net.quepierts.papyri.annotation.Controller;
+import net.quepierts.papyri.annotation.EventHandler;
 import net.quepierts.papyri.annotation.Handler;
 import net.quepierts.papyri.dto.Request;
 import net.quepierts.papyri.dto.Response;
+import net.quepierts.papyri.event.PapyriEventBus;
 import net.quepierts.papyri.exception.ServiceException;
 import net.quepierts.papyri.model.HandlerDefinition;
 import net.quepierts.papyri.model.ParameterDefinition;
@@ -31,16 +33,19 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class PapyriBoost {
+    public static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+
     private static final String TYPE_REQUEST = "request";
     private static final String TYPE_RESPONSE = "response";
-    private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
-    private static final List<Class<?>> classes = new ArrayList<>();
+    private static final List<Class<?>> CONTROLLERS = new ArrayList<>();
     private static final Map<String, HandlerDefinition> handlers = new HashMap<>();
     private static final Set<String> signals = new HashSet<>();
     private static final Object[] EMPTY = new Object[0];
 
     private static boolean searched = false;
     private static LogService logService;
+
+    private static Injector injector;
 
     public static void start(
             @Nonnull Class<? extends Consumer<String[]>> clazz,
@@ -54,7 +59,7 @@ public class PapyriBoost {
 
         searched = true;
 
-        Injector injector = Guice.createInjector(module, new ApplicationModule());
+        injector = Guice.createInjector(module, new ApplicationModule());
         logService = injector.getInstance(LogService.class);
 
         try {
@@ -201,7 +206,7 @@ public class PapyriBoost {
             searchFromJar(url.getPath());
         }
 
-        logService.info("Loaded Controllers: {}", classes.size());
+        logService.info("Loaded Controllers: {}", CONTROLLERS.size());
         logService.info("Loaded Handles: {}", handlers.size());
     }
 
@@ -266,12 +271,26 @@ public class PapyriBoost {
         try {
             Class<?> gotClass = Class.forName(path);
 
-            if (!gotClass.isAnnotationPresent(Controller.class))
-                return;
+            if (gotClass.isAnnotationPresent(Controller.class)) {
+                registerController(gotClass);
+            }
 
-            String ctrlPath = gotClass.getAnnotation(Controller.class).value();
 
-            for (Method method : gotClass.getMethods()) {
+            if (gotClass.isAnnotationPresent(EventHandler.class)) {
+                PapyriEventBus.subscribe(gotClass);
+            }
+
+        } catch (Exception e) {
+            e.fillInStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void registerController(Class<?> clazz) {
+        try {
+            String ctrlPath = clazz.getAnnotation(Controller.class).value();
+
+            for (Method method : clazz.getMethods()) {
                 if (!method.isAnnotationPresent(Handler.class)
                         || method.getReturnType() != Response.class)
                     continue;
@@ -293,7 +312,7 @@ public class PapyriBoost {
                 handlers.put(handlerPath, new HandlerDefinition(handle, requestDefinition, responseType));
             }
 
-            classes.add(gotClass);
+            CONTROLLERS.add(clazz);
         } catch (Exception e) {
             e.fillInStackTrace();
             throw new RuntimeException(e);
@@ -389,7 +408,7 @@ public class PapyriBoost {
         protected void configure() {
             bind(Gson.class).toInstance(new GsonBuilder().setDateFormat(DateFormat.MILLISECOND_FIELD).create());
             bind(LogService.class).toInstance(new Slf4jLogServiceImpl());
-            requestStaticInjection(classes.toArray(new Class<?>[0]));
+            requestStaticInjection(CONTROLLERS.toArray(new Class<?>[0]));
         }
     }
 
