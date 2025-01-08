@@ -1,6 +1,7 @@
 package proj.gomoku.app.view.game;
 
 import javafx.animation.*;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -9,16 +10,19 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
+import lombok.extern.slf4j.Slf4j;
 import proj.gomoku.app.Options;
 import proj.gomoku.app.view.Palette;
 import proj.gomoku.model.ChessState;
 import proj.gomoku.model.DroppingGomokuGame;
 import proj.gomoku.model.GomokuHelper;
 
+@Slf4j
 public class ChessColumn extends Pane {
-
     public static final int TRANSITION_MILLIS = 200;
+    private static final Font FONT = Font.font("Consolas", 32);
 
     private final int column;
     private final DroppingGomokuGame game;
@@ -26,8 +30,6 @@ public class ChessColumn extends Pane {
 
     private final FadeTransition bgTransition;
     private final FadeTransition pvTransition;
-
-    private boolean preview = false;
 
     public ChessColumn(DroppingGomokuGame game, int column) {
         this.column = column;
@@ -56,6 +58,12 @@ public class ChessColumn extends Pane {
         shadow.setRadius(10);
         rectangle.setEffect(shadow);
 
+        Label label = new Label(String.valueOf(this.column + 1));
+        label.setFont(FONT);
+        label.setTextFill(Color.gray(0.3));
+        label.setTranslateX(16);
+        label.setTranslateY(16);
+
         this.circles = new Circle[GomokuHelper.CHESSBOARD_HEIGHT + 1];
         for (int i = 0; i < GomokuHelper.CHESSBOARD_HEIGHT + 1; i++) {
             Circle circle = new Circle(40, 80 * GomokuHelper.CHESSBOARD_HEIGHT - 40 - i * 80, 32);
@@ -65,7 +73,7 @@ public class ChessColumn extends Pane {
             this.circles[i] = circle;
         }
         circles[0].setVisible(true);
-        this.getChildren().add(rectangle);
+        this.getChildren().addAll(rectangle, label);
         this.getChildren().addAll(this.circles);
 
         this.bgTransition = new FadeTransition(Duration.millis(TRANSITION_MILLIS), rectangle);
@@ -188,7 +196,6 @@ public class ChessColumn extends Pane {
     }
 
     private void playFadeOut() {
-        this.preview = false;
         if (this.bgTransition.getStatus() == Animation.Status.RUNNING) {
             this.bgTransition.stop();
         }
@@ -206,7 +213,6 @@ public class ChessColumn extends Pane {
     }
 
     private void showPreview() {
-        this.preview = true;
 
         if (this.pvTransition.getStatus() == Animation.Status.RUNNING) {
             this.pvTransition.stop();
@@ -219,7 +225,6 @@ public class ChessColumn extends Pane {
     }
 
     private void hidePreview() {
-        this.preview = false;
 
         if (this.pvTransition.getStatus() == Animation.Status.RUNNING) {
             this.pvTransition.stop();

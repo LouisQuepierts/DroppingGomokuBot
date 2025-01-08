@@ -2,6 +2,7 @@ package proj.gomoku.app.view.debug;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import proj.gomoku.app.view.Card;
@@ -16,13 +17,11 @@ import java.util.List;
 public class DebugChessboardPane extends Card {
     private static final Color[] STATUS_COLOR;
     private static final Color[] OPERATION_COLOR;
-    private final Rectangle[][] status;
+    private final BlockView[][] status;
 
     public DebugChessboardPane() {
         super(32 * GomokuHelper.CHESSBOARD_WIDTH, 32 * GomokuHelper.CHESSBOARD_HEIGHT);
-        this.status = new Rectangle[GomokuHelper.CHESSBOARD_WIDTH][GomokuHelper.CHESSBOARD_HEIGHT];
-
-        Color fill = STATUS_COLOR[0];
+        this.status = new BlockView[GomokuHelper.CHESSBOARD_WIDTH][GomokuHelper.CHESSBOARD_HEIGHT];
 
         float halfWidth = (GomokuHelper.CHESSBOARD_WIDTH - 1) / 2.0f;
         float halfHeight = (GomokuHelper.CHESSBOARD_HEIGHT - 1) / 2.0f;
@@ -31,15 +30,8 @@ public class DebugChessboardPane extends Card {
 
         for (int i = 0; i < GomokuHelper.CHESSBOARD_WIDTH; i++) {
             for (int j = 0; j < GomokuHelper.CHESSBOARD_HEIGHT; j++) {
-                Rectangle rectangle = new Rectangle(24, 24);
-                rectangle.setTranslateX((i - halfWidth) * 28.0);
-                rectangle.setTranslateY((GomokuHelper.CHESSBOARD_HEIGHT - 1 - j - halfHeight) * 28.0);
-                rectangle.setArcWidth(10);
-                rectangle.setArcHeight(10);
-                rectangle.setFill(fill);
-                rectangle.setStrokeWidth(4);
-
-                this.status[i][j] = rectangle;
+                BlockView blockView = new BlockView((i - halfWidth) * 28.0, (GomokuHelper.CHESSBOARD_HEIGHT - 1 - j - halfHeight) * 28.0);
+                this.status[i][j] = blockView;
             }
             children.addAll(this.status[i]);
         }
@@ -95,5 +87,32 @@ public class DebugChessboardPane extends Card {
         OPERATION_COLOR[OperationType.ACCEPTED.ordinal()] = Color.rgb(119, 206, 121);
         OPERATION_COLOR[OperationType.BLOCKED.ordinal()] = Color.rgb(255, 0, 0);
         OPERATION_COLOR[OperationType.HIGHLIGHT.ordinal()] = Color.YELLOW;
+    }
+
+    private static class BlockView extends Rectangle {
+        private static Color[] MARKED_COLOR = new Color[] {
+                Color.YELLOW,
+                Color.GREEN,
+                Color.PURPLE,
+                Color.BLUE
+        };
+
+        private int i = 0;
+        public BlockView(double x, double y) {
+            super(24, 24);
+            this.setTranslateX(x);
+            this.setTranslateY(y);
+            this.setArcWidth(10);
+            this.setArcHeight(10);
+            this.setFill(STATUS_COLOR[0]);
+            this.setStrokeWidth(4);
+
+            this.setOnMouseClicked(this::onMouseClicked);
+        }
+
+        private void onMouseClicked(MouseEvent event) {
+            this.setFill(MARKED_COLOR[this.i]);
+            this.i = (this.i + 1) % MARKED_COLOR.length;
+        }
     }
 }

@@ -5,6 +5,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -71,6 +73,7 @@ public class GomokuApplication extends Application {
         double minWidth = chessBoardPane.getMinWidth() + optionsPane.getMinWidth() + debugPane.getMinWidth();
 
         Scene scene = new Scene(pane);
+        scene.setOnKeyPressed(this::onKeyPressed);
         stage.setScene(scene);
         stage.setMinWidth(minWidth);
         stage.setMinHeight(SCENE_HEIGHT + 80);
@@ -91,6 +94,27 @@ public class GomokuApplication extends Application {
             }
         });
         PapyriEventBus.subscribe(finishPane);
+    }
+
+    private void onKeyPressed(KeyEvent event) {
+        KeyCode code = event.getCode();
+
+        switch (code) {
+            case R:
+                this.game.reset();
+                return;
+            case U:
+                this.game.undo();
+                return;
+        }
+
+        if (code.isDigitKey()) {
+            int index = code.getCode() % 48 - 1;
+
+            if (this.game.isPlayerRound() || !Options.ENABLED_AI.getBooleanValue()) {
+                this.game.add(index);
+            }
+        }
     }
 
     private Pane initBottom() {

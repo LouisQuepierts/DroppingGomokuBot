@@ -44,13 +44,13 @@ public class GameFinishPane extends Card {
 
             switch (event.getGame().getWinner()) {
                 case NONE:
-                    this.setMessage("Tie Game!");
+                    this.setMessage("Dead Hea!");
                     break;
                 case BLUE:
-                    this.setMessage(enabledAI ? "Player Win!" : "Blue Team Win!");
+                    this.setMessage(enabledAI ? "Player Wins!" : "Blue Team Wins!");
                     break;
                 case RED:
-                    this.setMessage(enabledAI ? "AI Win!" : "Red Team Win!");
+                    this.setMessage(enabledAI ? "AI Wins!" : "Red Team Wins!");
                     break;
             }
         });
