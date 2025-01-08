@@ -17,8 +17,10 @@ import net.quepierts.papyri.event.OptionUpdateEvent;
 import net.quepierts.papyri.event.PapyriEventBus;
 import proj.gomoku.app.view.ChessBoardPane;
 import proj.gomoku.app.view.ClickButton;
+import proj.gomoku.app.view.GameFinishPane;
 import proj.gomoku.app.view.debug.DebugPane;
 import proj.gomoku.app.view.option.OptionsPane;
+import proj.gomoku.model.AABB;
 import proj.gomoku.model.DroppingGomokuGame;
 import proj.gomoku.model.bot.BotHandler;
 import proj.gomoku.model.event.CloseApplicationEvent;
@@ -46,6 +48,14 @@ public class GomokuApplication extends Application {
         DebugPane debugPane = new DebugPane();
         Pane bottom = this.initBottom();
         debugPane.setVisible(false);
+
+        double width = chessBoardPane.getMinWidth() / 2;
+        double height = chessBoardPane.getMinHeight() / 2;
+        GameFinishPane finishPane = new GameFinishPane();
+        finishPane.setVisible(false);
+        finishPane.setBound(new AABB(-width, -height, width, height));
+
+        chessBoardPane.getChildren().add(finishPane);
 
         Label title = new Label("Dropping Connect Four");
         title.setTextFill(Color.rgb(131, 233, 159));
@@ -80,6 +90,7 @@ public class GomokuApplication extends Application {
                 }
             }
         });
+        PapyriEventBus.subscribe(finishPane);
     }
 
     private Pane initBottom() {

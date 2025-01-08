@@ -5,6 +5,7 @@ import proj.gomoku.model.DroppingGomokuGame;
 import proj.gomoku.model.GomokuHelper;
 import proj.gomoku.model.ImmutableIntegerPair;
 
+// Does not work
 public class BacktraceEvaluator {
     public static final int MAX_DEPTH = 9;
 
