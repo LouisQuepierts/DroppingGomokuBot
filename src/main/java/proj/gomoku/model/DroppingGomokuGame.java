@@ -59,6 +59,10 @@ public class DroppingGomokuGame {
             if (!this.silent) {
                 PapyriEventBus.post(new GameFinishedEvent(this));
             }
+        } else if (this.steps.size() == GomokuHelper.CHESSBOARD_WIDTH * GomokuHelper.CHESSBOARD_HEIGHT) {
+            if (!this.silent) {
+                PapyriEventBus.post(new GameFinishedEvent(this));
+            }
         }
 
         ChessState last = this.current;
@@ -90,7 +94,7 @@ public class DroppingGomokuGame {
     }
 
     public boolean isGameFinished() {
-        return this.winner != ChessState.NONE || this.steps.size() >= GomokuHelper.CHESSBOARD_WIDTH * GomokuHelper.CHESSBOARD_HEIGHT;
+        return this.winner != ChessState.NONE || this.steps.size() == GomokuHelper.CHESSBOARD_WIDTH * GomokuHelper.CHESSBOARD_HEIGHT;
     }
 
     public boolean isPlayerRound() {
@@ -134,7 +138,7 @@ public class DroppingGomokuGame {
     }
 
     public ChessState getLastState() {
-        return this.current == ChessState.RED ? ChessState.BLUE : ChessState.RED;
+        return ChessState.getOpposite(this.current);
     }
 
     public ChessState getCurrentState() {

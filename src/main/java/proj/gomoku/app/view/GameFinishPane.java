@@ -44,7 +44,7 @@ public class GameFinishPane extends Card {
 
             switch (event.getGame().getWinner()) {
                 case NONE:
-                    this.setMessage("Dead Hea!");
+                    this.setMessage("Dead Heat!");
                     break;
                 case BLUE:
                     this.setMessage(enabledAI ? "Player Wins!" : "Blue Team Wins!");
