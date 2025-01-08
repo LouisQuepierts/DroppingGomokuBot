@@ -63,7 +63,7 @@ public class DroppingGomokuGame {
         }
 
         ChessState last = this.current;
-        this.current = this.current == ChessState.RED ? ChessState.BLUE : ChessState.RED;
+        this.current = ChessState.getOpposite(this.current);
         if (!this.silent) {
             PapyriEventBus.post(new PlacedChessEvent(this, column, row, last));
         }
@@ -78,7 +78,7 @@ public class DroppingGomokuGame {
         ImmutableIntegerPair packed = this.steps.pop();
         final int column = packed.x();
         final int row = packed.y();
-        this.current = this.current == ChessState.RED ? ChessState.BLUE : ChessState.RED;
+        this.current = ChessState.getOpposite(this.current);
         this.winner = ChessState.NONE;
         this.winDirection = null;
         this.chessboard[column][row] = ChessState.NONE;

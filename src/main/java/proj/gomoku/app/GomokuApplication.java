@@ -4,10 +4,14 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import net.quepierts.papyri.event.OptionUpdateEvent;
 import net.quepierts.papyri.event.PapyriEventBus;
@@ -43,17 +47,24 @@ public class GomokuApplication extends Application {
         Pane bottom = this.initBottom();
         debugPane.setVisible(false);
 
+        Label title = new Label("Dropping Connect Four");
+        title.setTextFill(Color.rgb(131, 233, 159));
+        title.setFont(Font.font("Consolas", FontWeight.BOLD, 40));
+        StackPane titlePane = new StackPane();
+        titlePane.getChildren().add(title);
+
         pane.setCenter(chessBoardPane);
         pane.setLeft(optionsPane);
         pane.setRight(debugPane);
         pane.setBottom(bottom);
+        pane.setTop(titlePane);
 
         double minWidth = chessBoardPane.getMinWidth() + optionsPane.getMinWidth() + debugPane.getMinWidth();
 
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         stage.setMinWidth(minWidth);
-        stage.setMinHeight(SCENE_HEIGHT + 40);
+        stage.setMinHeight(SCENE_HEIGHT + 80);
         stage.show();
         stage.setOnCloseRequest(windowEvent -> PapyriEventBus.post(new CloseApplicationEvent()));
 
