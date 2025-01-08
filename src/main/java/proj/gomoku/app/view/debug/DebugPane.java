@@ -1,7 +1,8 @@
 package proj.gomoku.app.view.debug;
 
 import javafx.geometry.Pos;
-import javafx.scene.layout.*;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import proj.gomoku.app.view.BaseBoard;
 import proj.gomoku.model.AABB;

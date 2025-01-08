@@ -4,7 +4,10 @@ import lombok.Getter;
 import net.quepierts.papyri.event.OptionUpdateEvent;
 import net.quepierts.papyri.event.PapyriEventBus;
 import proj.gomoku.app.Options;
-import proj.gomoku.model.*;
+import proj.gomoku.model.ChessState;
+import proj.gomoku.model.DroppingGomokuGame;
+import proj.gomoku.model.GomokuHelper;
+import proj.gomoku.model.ImmutableIntegerPair;
 import proj.gomoku.model.debug.DebugHandler;
 
 public class GomokuBot {

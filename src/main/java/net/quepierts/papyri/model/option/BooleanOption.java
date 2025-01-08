@@ -1,7 +1,5 @@
 package net.quepierts.papyri.model.option;
 
-import lombok.Setter;
-
 public class BooleanOption extends OptionEntry<Boolean> {
     private boolean value;
 
