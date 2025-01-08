@@ -1,6 +1,5 @@
 package proj.gomoku.model.bot;
 
-import net.quepierts.papyri.LogUtil;
 import net.quepierts.papyri.annotation.HandleEvent;
 import net.quepierts.papyri.event.OptionUpdateEvent;
 import net.quepierts.papyri.model.option.BooleanOption;
@@ -95,7 +94,6 @@ public class BotHandler {
 
     private void placeLater() {
         try {
-            LogUtil.info("Play Placed Chess");
             Thread.sleep(1000);
             synchronized (this) {
                 if (this.undoCall) {

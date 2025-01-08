@@ -16,6 +16,7 @@ import java.util.List;
 
 public class DebugPane extends StackPane {
     private final DebugChessboardPane chessboardPane;
+    private final DebugWeightPane weightPane;
 
     public DebugPane() {
         this.setMinWidth(360);
@@ -30,9 +31,14 @@ public class DebugPane extends StackPane {
 
         this.chessboardPane = new DebugChessboardPane();
         this.chessboardPane.setBound(bound);
-        vBox.getChildren().add(this.chessboardPane);
 
-        this.getChildren().addAll(baseBoard, vBox);
+        this.weightPane = new DebugWeightPane();
+        this.weightPane.setBound(bound);
+
+        this.getChildren().addAll(baseBoard, this.chessboardPane, this.weightPane);
+        this.chessboardPane.setTranslateY(-100);
+        this.weightPane.setTranslateY(100);
+
         DebugHandler.bind(this);
     }
 
@@ -46,6 +52,10 @@ public class DebugPane extends StackPane {
 
     public void fillFrames(List<ImmutableIntegerPair> pairs, OperationType type) {
         this.chessboardPane.fillFrames(pairs, type);
+    }
+
+    public void displayWeight(int i, int[] weights) {
+        this.weightPane.setLine(i, weights);
     }
 
     public void reset() {

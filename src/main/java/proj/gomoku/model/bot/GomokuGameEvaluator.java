@@ -39,7 +39,9 @@ public class GomokuGameEvaluator {
 
         int average = Math.round(sum / this.game.getColumns()) ;
         int[] evaluated = this.evaluate(col, row, average, type);
-        System.out.println(col + ":" + Arrays.toString(evaluated));
+        if (Options.ENABLED_DEBUG.getBooleanValue()) {
+            DebugHandler.displayWeight(col, evaluated);
+        }
         return Arrays.stream(evaluated).sum();
     }
 

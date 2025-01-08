@@ -42,6 +42,12 @@ public class DebugHandler {
         }
     }
 
+    public static void displayWeight(int i, int[] weights) {
+        if (pane != null) {
+            Platform.runLater(() -> pane.displayWeight(i, weights));
+        }
+    }
+
     public static void reset() {
         if (pane != null) {
             pane.reset();
