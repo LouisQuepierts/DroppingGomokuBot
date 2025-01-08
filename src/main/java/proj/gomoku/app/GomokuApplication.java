@@ -15,7 +15,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import net.quepierts.papyri.event.OptionUpdateEvent;
 import net.quepierts.papyri.event.PapyriEventBus;
-import proj.gomoku.app.view.ChessBoardPane;
+import proj.gomoku.app.view.game.ChessBoardPane;
 import proj.gomoku.app.view.ClickButton;
 import proj.gomoku.app.view.GameFinishPane;
 import proj.gomoku.app.view.debug.DebugPane;
@@ -26,7 +26,6 @@ import proj.gomoku.model.bot.BotHandler;
 import proj.gomoku.model.event.CloseApplicationEvent;
 
 public class GomokuApplication extends Application {
-    public static final int SCENE_WIDTH = 800;
     public static final int SCENE_HEIGHT = 600;
 
     private final DroppingGomokuGame game = new DroppingGomokuGame(false);
@@ -76,6 +75,7 @@ public class GomokuApplication extends Application {
         stage.setMinWidth(minWidth);
         stage.setMinHeight(SCENE_HEIGHT + 80);
         stage.show();
+        stage.setTitle("Dropping Connect Four");
         stage.setOnCloseRequest(windowEvent -> PapyriEventBus.post(new CloseApplicationEvent()));
 
         pane.requestFocus();

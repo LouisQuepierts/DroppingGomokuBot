@@ -15,7 +15,7 @@ public class GomokuBot {
     private final DroppingGomokuGame game;
     private final DroppingGomokuGame simulate;
 
-    private final GomokuGameEvaluator evaluator;
+    private final ChessboardEvaluator evaluator;
     private final BacktraceEvaluator backtrace;
 
     private int steps = 0;
@@ -23,7 +23,7 @@ public class GomokuBot {
     public GomokuBot(DroppingGomokuGame game) {
         this.game = game;
         this.simulate = new DroppingGomokuGame(true);
-        this.evaluator = new GomokuGameEvaluator(this.simulate);
+        this.evaluator = new ChessboardEvaluator(this.simulate);
 
         this.backtrace = new BacktraceEvaluator(this.simulate, GomokuHelper.AI_STATE, this.evaluator);
 

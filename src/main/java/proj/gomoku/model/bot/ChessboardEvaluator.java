@@ -1,10 +1,7 @@
 package proj.gomoku.model.bot;
 
 import proj.gomoku.app.Options;
-import proj.gomoku.model.ChessState;
-import proj.gomoku.model.DroppingGomokuGame;
-import proj.gomoku.model.GomokuHelper;
-import proj.gomoku.model.ImmutableIntegerPair;
+import proj.gomoku.model.*;
 import proj.gomoku.model.debug.DebugHandler;
 import proj.gomoku.model.debug.OperationType;
 
@@ -12,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class GomokuGameEvaluator {
+public class ChessboardEvaluator {
     private static final int[] CONSECUTIVE_WEIGHT = weight(GomokuHelper.REQUIRED_LENGTH, 24, 2);
     private static final int[] OBSTRUCT_WEIGHT = weight(GomokuHelper.REQUIRED_LENGTH, 22, 3);
 
@@ -20,7 +17,7 @@ public class GomokuGameEvaluator {
     private final DroppingGomokuGame game;
     private final List<ImmutableIntegerPair> searching = new ArrayList<>(GomokuHelper.CHESSBOARD_HEIGHT);
 
-    public GomokuGameEvaluator(DroppingGomokuGame game) {
+    public ChessboardEvaluator(DroppingGomokuGame game) {
         this.game = game;
 
         System.out.println(Arrays.toString(CONSECUTIVE_WEIGHT));

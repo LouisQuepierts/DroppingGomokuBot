@@ -1,4 +1,4 @@
-package proj.gomoku.app.view;
+package proj.gomoku.app.view.game;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -11,11 +11,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import net.quepierts.papyri.annotation.HandleEvent;
 import net.quepierts.papyri.event.PapyriEventBus;
+import proj.gomoku.app.view.BaseBoard;
 import proj.gomoku.model.ChessState;
 import proj.gomoku.model.DroppingGomokuGame;
 import proj.gomoku.model.GomokuHelper;
 import proj.gomoku.model.ImmutableIntegerPair;
-import proj.gomoku.model.bot.Direction;
+import proj.gomoku.model.Direction;
 import proj.gomoku.model.event.GameFinishedEvent;
 import proj.gomoku.model.event.GameResetEvent;
 import proj.gomoku.model.event.PlacedChessEvent;

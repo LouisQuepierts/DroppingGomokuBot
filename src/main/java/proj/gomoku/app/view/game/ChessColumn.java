@@ -1,4 +1,4 @@
-package proj.gomoku.app.view;
+package proj.gomoku.app.view.game;
 
 import javafx.animation.*;
 import javafx.scene.effect.DropShadow;
@@ -11,6 +11,7 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import proj.gomoku.app.Options;
+import proj.gomoku.app.view.Palette;
 import proj.gomoku.model.ChessState;
 import proj.gomoku.model.DroppingGomokuGame;
 import proj.gomoku.model.GomokuHelper;

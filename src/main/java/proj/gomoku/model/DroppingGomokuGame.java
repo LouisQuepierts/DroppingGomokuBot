@@ -5,7 +5,6 @@ import net.quepierts.papyri.event.OptionUpdateEvent;
 import net.quepierts.papyri.event.PapyriEventBus;
 import net.quepierts.papyri.model.option.BooleanOption;
 import proj.gomoku.app.Options;
-import proj.gomoku.model.bot.Direction;
 import proj.gomoku.model.event.GameFinishedEvent;
 import proj.gomoku.model.event.GameResetEvent;
 import proj.gomoku.model.event.PlacedChessEvent;

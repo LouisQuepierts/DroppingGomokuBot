@@ -11,9 +11,9 @@ public class BacktraceEvaluator {
 
     private final DroppingGomokuGame game;
     private final ChessState team;
-    private final GomokuGameEvaluator evaluator;
+    private final ChessboardEvaluator evaluator;
     
-    public BacktraceEvaluator(DroppingGomokuGame game, ChessState team, GomokuGameEvaluator evaluator) {
+    public BacktraceEvaluator(DroppingGomokuGame game, ChessState team, ChessboardEvaluator evaluator) {
         this.game = game;
         this.team = team;
         this.evaluator = evaluator;

@@ -1,4 +1,4 @@
-package proj.gomoku.model.bot;
+package proj.gomoku.model;
 
 import lombok.Getter;
 
